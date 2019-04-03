@@ -1,3 +1,5 @@
+package yuge
+
 import net.dv8tion.jda.core.JDABuilder
 import net.dv8tion.jda.core.entities.TextChannel
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent
@@ -36,13 +38,18 @@ fun main() {
 class MessageListener: ListenerAdapter() {
 
     override fun onMessageReceived(event: MessageReceivedEvent) {
-
         if (event.message.contentDisplay == "@OutBot notify") {
             println("Notifying CSA that ${event.author.asMention} will not be attending this week.")
 
             val excuses = File("excuses").readLines()
 
             generalChannel?.sendMessage("We've got another drop out for the week! ${event.author.asMention} ${excuses[Random.nextInt(0, excuses.size)]}")!!.queue()
+        } else if(event.message.contentDisplay.contains(Regex("""@OutBot \s*.*dad\s*joke.*""", RegexOption.IGNORE_CASE))){
+            println("Telling CSA a dad joke.")
+            val message = getDadJoke()
+            if(message != null && message.isNotEmpty()){
+                generalChannel?.sendMessage(message)!!.queue();
+            }
         }
     }
 }
